@@ -1,0 +1,78 @@
+### Build file for CoffeePhysics. ###
+fs 			  = require 'fs'
+uglify 		  = require 'uglify-js'
+{exec, spawn} = require 'child_process'
+
+config =
+	compiled: 'compiled'
+	deploy: 'deploy'
+	source: 'source'
+
+output =
+	'physics': [
+		'base'
+		'math/Random'
+		'math/Vector'
+		'engine/Particle'
+		'engine/Spring'
+		'engine/Physics'
+		'behaviour/Behaviour'
+		'behaviour/Attraction'
+		'behaviour/Collision'
+		'behaviour/ConstantForce'
+		'behaviour/EdgeBounce'
+		'behaviour/EdgeWrap'
+		'behaviour/Wander'
+	]
+
+grr = (message = '') -> 
+    options = {
+        title: 'CoffeeScript'
+        image: '/Users/justin/node_modules/growl/lib/CoffeeScript.png'
+    }
+    try require('growl')(message, options)
+
+task 'watch', 'Watch & compile changes in source dir', ->
+	
+	watch = exec "coffee -o #{config.compiled}/ -cwb #{config.source}/"
+	watch.stdout.on 'data', (data) ->
+		process.stdout.write data
+		#grr "#{data}"
+
+task 'build', '', ->
+	
+	for target, files of output
+
+		# Map filenames.
+		mapped = files.map (file) ->
+			file = "#{config.source}/#{file}.coffee"
+
+		# Concatenated file.
+		file = "#{config.deploy}/#{target}.js"
+
+		# Concatenate and compile.
+		exec "coffee -j #{file} -cb #{(mapped.join ' ')}"
+		console.log "coffee -j #{file} -cb #{(mapped.join ' ')}"
+
+		# Uglify.
+		jsp = uglify.parser
+		pro = uglify.uglify
+
+		fs.readFile file, 'utf8', (err, data) ->
+			
+			# Parse code and get the initial AST.
+			ast = jsp.parse data
+
+			# Get a new AST with mangled names.
+			ast = pro.ast_mangle ast
+
+			# Get an AST with compression optimizations.
+			ast = pro.ast_squeeze ast
+
+			# Compressed code.
+			code = pro.gen_code ast
+		
+			# Write to file.
+			fs.writeFile "#{config.deploy}/#{target}.min.js", code
+			grr "Minfied: #{config.deploy}/#{target}.min.js"
+			

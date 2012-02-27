@@ -1,0 +1,188 @@
+<html>
+<head>
+    <title>CoffeePhysics</title>
+    <!-- <link href='http://fonts.googleapis.com/css?family=Play:400,700' rel='stylesheet' type='text/css'> -->
+    <style type="text/css" media="screen">
+        html, body {
+            font-family: 'Play', sans-serif;
+            margin: 0;
+        }
+        header {
+            background: rgba(0,0,0,0.85);
+            position: absolute;
+            text-indent: 10px;
+            height: 60px;
+            width: 100%;
+            left: 0px;
+            top: 0px;
+        }
+        header h1 {
+            font-size: 24px;
+            font-weight: 300;
+            line-height: 28px;
+            margin: 8px 0 0 0;
+            color: #FFFFFF;
+        }
+        header h2 {
+            font-size: 12px;
+            font-weight: 300;
+            line-height: 1;
+            margin: 0px;
+            color: #AAAAAA;
+        }
+        #container {
+            background: #252525;
+            margin: auto;
+            height: 100%;
+            width: 100%;
+        }
+        .gui {
+            margin-top: 62px;
+        }
+        #start {
+            position: absolute;
+            text-align: center;
+            display: block;
+            margin-left: -50px;
+            margin-top: -10px;
+            text-decoration: none;
+            font-size: 24px;
+            height: 20px;
+            width: 100px;
+            color: #FFF;
+            left: 50%;
+            top: 50%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CoffeePhysics</h1>
+        <h2>A JavaScript / CoffeeScript Physics Engine</h2>
+    </header>
+    <div id="container">
+        <a id="start" href="#">Start</a>
+    </div>
+    <!-- Libraries -->
+    <script src="library/Stats.js"></script>
+    <script src="library/dat.gui.js"></script>
+    <!-- Core -->
+    <script src="compiled/base.js"></script>
+    <script src="compiled/math/Random.js"></script>
+    <script src="compiled/math/Vector.js"></script>
+    <!-- Integrators -->
+    <script src="compiled/engine/integrator/Integrator.js"></script>
+    <script src="compiled/engine/integrator/Euler.js"></script>
+    <script src="compiled/engine/integrator/ImprovedEuler.js"></script>
+    <script src="compiled/engine/integrator/Verlet.js"></script>
+    <!-- Engine -->
+    <script src="compiled/engine/Particle.js"></script>
+    <script src="compiled/engine/Physics.js"></script>
+    <script src="compiled/engine/Spring.js"></script>
+    <!-- Behaviours -->
+    <script src="compiled/behaviour/Behaviour.js"></script>
+    <script src="compiled/behaviour/Attraction.js"></script>
+    <script src="compiled/behaviour/Collision.js"></script>
+    <script src="compiled/behaviour/ConstantForce.js"></script>
+    <script src="compiled/behaviour/EdgeBounce.js"></script>
+    <script src="compiled/behaviour/EdgeWrap.js"></script>
+    <script src="compiled/behaviour/Wander.js"></script>
+    <!-- Demo Renderers -->
+    <script src="compiled/demos/renderer/Renderer.js"></script>
+    <script src="compiled/demos/renderer/CanvasRenderer.js"></script>
+    <script src="compiled/demos/renderer/WebGLRenderer.js"></script>
+    <script src="compiled/demos/renderer/DOMRenderer.js"></script>
+    <!-- Demos -->
+    <script src="compiled/demos/Demo.js"></script>
+    <script src="compiled/demos/AttractionDemo.js"></script>
+    <script src="compiled/demos/BalloonDemo.js"></script>
+    <script src="compiled/demos/BoundsDemo.js"></script>
+    <script src="compiled/demos/ClothDemo.js"></script>
+    <script src="compiled/demos/ChainDemo.js"></script>
+    <script src="compiled/demos/CollisionDemo.js"></script>
+    <script>
+
+        (function(){
+
+            var DEMOS = {
+                'Attraction': AttractionDemo,
+                'Balloon': BalloonDemo,
+                //'Bounds': BoundsDemo,
+                'Chain': ChainDemo,
+                'Cloth': ClothDemo,
+                'Collision': CollisionDemo
+            };
+            
+            var TestBed = function() {
+
+                var me = this;
+                
+                me.demo = null;
+                me.playing = true;
+                me.stats = new Stats();
+                me.Demo = '';
+                me.container = document.getElementById('container');
+
+                me.update = function() {
+
+                    requestAnimationFrame(me.update);
+                    me.stats.update();
+
+                    if (me.demo && me.playing) {
+                        me.demo.step();
+                    }
+                }
+
+                me.setDemo = function(name) {
+
+                    if (me.demo) {
+                        me.demo.destroy();
+                    }
+
+                    me.demo = new DEMOS[name]();
+                    me.demo.init(me.container);
+                }
+
+            };
+
+            window.onload = function() {
+
+                var names = []; for (var name in DEMOS) { names.push(name); }
+                
+                // Create testbed
+                var test = new TestBed();
+
+                // Create GUI.
+                var gui = new dat.GUI();
+
+                // Demo selector.
+                gui.add(test, 'Demo', names)
+                    .onChange(test.setDemo)
+                    .setValue(names[0]);
+
+                //gui.add(test, 'playing');
+
+                // Add stats.
+                stats = test.stats.getDomElement();
+                stats.style.position = 'absolute';
+                stats.style.left = '2px';
+                stats.style.top = '62px';
+                document.body.appendChild(stats);
+
+                var start = document.getElementById('start');
+
+
+                // Start.
+                start.addEventListener('click', function(event) {
+                    var container = document.getElementById("container");
+                    container.removeChild(start);
+                    event.preventDefault();
+                    test.update();
+                });
+            };
+
+        })();
+        
+    </script>
+</body>
+</html>
