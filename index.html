@@ -60,9 +60,7 @@
         <h1>CoffeePhysics</h1>
         <h2>A JavaScript / CoffeeScript Physics Engine</h2>
     </header>
-    <div id="container">
-        <a id="start" href="#">Start</a>
-    </div>
+    <div id="container"></div>
     <!-- Libraries -->
     <script src="library/Stats.js"></script>
     <script src="library/dat.gui.js"></script>
@@ -169,17 +167,8 @@
                 stats.style.top = '62px';
                 document.body.appendChild(stats);
 
-                var start = document.getElementById('start');
-
-
                 // Start.
-                start.addEventListener('click', function(event) {
-                    var container = document.getElementById("container");
-                    container.removeChild(start);
-                    event.preventDefault();
-                    test.update();
-                });
-            };
+                test.update();
 
         })();
         

@@ -15,9 +15,6 @@ class AttractionDemo extends Demo
         repulsion = new Attraction @mouse.pos, 200, -2000
         collide = new Collision()
 
-        # Collision is expensive - don't apply every update.
-        collide.interval = 3
-
         for i in [0..400]
 
             p = new Particle (Random 0.1, 3.0)
