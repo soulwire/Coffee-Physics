@@ -110,6 +110,8 @@
                 'Cloth': ClothDemo,
                 'Collision': CollisionDemo
             };
+
+            var doUpdate = true;
             
             var TestBed = function() {
 
@@ -123,7 +125,9 @@
 
                 me.update = function() {
 
-                    requestAnimationFrame(me.update);
+                    if (doUpdate) {
+                        requestAnimationFrame(me.update);
+                    }
                     me.stats.update();
 
                     if (me.demo && me.playing) {
@@ -167,8 +171,13 @@
                 stats.style.top = '62px';
                 document.body.appendChild(stats);
 
+                window.addEventListener('click', function(){
+                    doUpdate = false;
+                });
+
                 // Start.
                 test.update();
+            }
 
         })();
         

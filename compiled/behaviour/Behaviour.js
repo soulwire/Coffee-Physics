@@ -9,7 +9,6 @@ Behaviour = (function() {
   function Behaviour() {
     this.GUID = Behaviour.GUID++;
     this.interval = 1;
-    console.log(this, this.GUID);
   }
 
   Behaviour.prototype.apply = function(p, dt, index) {

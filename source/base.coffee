@@ -17,7 +17,7 @@ do ->
     if not window.requestAnimationFrame
 
         window.requestAnimationFrame = (callback, element) ->
-            now = new Date.getTime()
+            now = new Date().getTime()
             delta = Math.max 0, 16 - (now - old)
             setTimeout (-> callback(time + delta)), delta
             old = now + delta

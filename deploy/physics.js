@@ -32,7 +32,7 @@ namespace = function(id) {
   if (!window.requestAnimationFrame) {
     window.requestAnimationFrame = function(callback, element) {
       var delta, now, old;
-      now = new Date.getTime();
+      now = new Date().getTime();
       delta = Math.max(0, 16 - (now - old));
       setTimeout((function() {
         return callback(time + delta);
@@ -358,14 +358,14 @@ Physics = (function() {
 
   function Physics(integrator) {
     this.integrator = integrator != null ? integrator : new Euler();
-    this.timestep = 1.0 / 120;
+    this.timestep = 1.0 / 60;
     this.viscosity = 0.005;
     this.behaviours = [];
     this._time = 0.0;
     this._step = 0.0;
     this._clock = null;
     this._buffer = 0.0;
-    this._maxSteps = 10;
+    this._maxSteps = 4;
     this.particles = [];
     this.springs = [];
   }
@@ -440,7 +440,6 @@ Behaviour = (function() {
   function Behaviour() {
     this.GUID = Behaviour.GUID++;
     this.interval = 1;
-    console.log(this, this.GUID);
   }
 
   Behaviour.prototype.apply = function(p, dt, index) {

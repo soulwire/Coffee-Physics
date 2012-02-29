@@ -16,6 +16,10 @@ Demo = (function() {
     this.width = window.innerWidth;
     this.renderer = new WebGLRenderer();
     this.renderer.mouse = this.mouse;
+    if (!this.renderer.gl) {
+      alert('WebGL not detected');
+      throw 'WebGL not detected';
+    }
     this.renderTime = 0;
   }
 
@@ -29,7 +33,6 @@ Demo = (function() {
 
   Demo.prototype.init = function(container) {
     var particle, _i, _len, _ref;
-    console.log(this, 'init');
     this.setup();
     _ref = this.physics.particles;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -71,7 +74,6 @@ Demo = (function() {
   */
 
   Demo.prototype.destroy = function() {
-    console.log(this, 'destroy');
     window.removeEventListener('mousemove', this.mousemove);
     window.removeEventListener('resize', this.resize);
     container.removeChild(this.renderer.domElement);

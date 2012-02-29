@@ -17,6 +17,10 @@ class Demo
 		@renderer = new WebGLRenderer()
 		@renderer.mouse = @mouse
 
+		if not @renderer.gl
+			alert 'WebGL not detected'
+			throw 'WebGL not detected'
+
 		@renderTime = 0;
 
 	setup: ->
@@ -26,7 +30,7 @@ class Demo
 	### Initialise the demo (override). ###
 	init: (container) ->
 
-		console.log @, 'init'
+		## console.log @, 'init'
 
 		# Build the scene.
 		do @setup
@@ -72,7 +76,7 @@ class Demo
 	### Clean up after yourself. ###
 	destroy: ->
 
-		console.log @, 'destroy'
+		## console.log @, 'destroy'
 
 		# Remove event handlers.
 		window.removeEventListener 'mousemove', @mousemove

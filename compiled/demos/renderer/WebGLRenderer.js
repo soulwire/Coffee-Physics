@@ -64,10 +64,9 @@ WebGLRenderer = (function(_super) {
       radius: this.gl.getAttribLocation(this.particleShader, 'radius'),
       colour: this.gl.getAttribLocation(this.particleShader, 'colour')
     };
-    this.springShader.attributes = {
+    return this.springShader.attributes = {
       position: this.gl.getAttribLocation(this.springShader, 'position')
     };
-    return console.log(this.particleShader);
   };
 
   WebGLRenderer.prototype.initBuffers = function(physics) {
@@ -92,8 +91,7 @@ WebGLRenderer = (function(_super) {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.particleColourBuffer);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(colours), this.gl.STATIC_DRAW);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.particleRadiusBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(radii), this.gl.STATIC_DRAW);
-    return console.log(this.particleColourBuffer);
+    return this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(radii), this.gl.STATIC_DRAW);
   };
 
   WebGLRenderer.prototype.createParticleTextureData = function(size) {
@@ -150,16 +148,12 @@ WebGLRenderer = (function(_super) {
     this.gl.attachShader(prog, vs);
     this.gl.attachShader(prog, fs);
     this.gl.linkProgram(prog);
-    console.log('Vertex Shader Compiled', this.gl.getShaderParameter(vs, this.gl.COMPILE_STATUS));
-    console.log('Fragment Shader Compiled', this.gl.getShaderParameter(fs, this.gl.COMPILE_STATUS));
-    console.log('Program Linked', this.gl.getProgramParameter(prog, this.gl.LINK_STATUS));
     return prog;
   };
 
   WebGLRenderer.prototype.setSize = function(width, height) {
     this.width = width;
     this.height = height;
-    console.log('resize', this.width, this.height);
     WebGLRenderer.__super__.setSize.call(this, this.width, this.height);
     this.canvas.width = this.width;
     this.canvas.height = this.height;
@@ -213,9 +207,7 @@ WebGLRenderer = (function(_super) {
     }
   };
 
-  WebGLRenderer.prototype.destroy = function() {
-    return console.log('Destroy');
-  };
+  WebGLRenderer.prototype.destroy = function() {};
 
   return WebGLRenderer;
 

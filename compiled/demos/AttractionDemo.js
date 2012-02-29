@@ -20,7 +20,6 @@ AttractionDemo = (function(_super) {
     attraction = new Attraction(this.mouse.pos, 1200, 1200);
     repulsion = new Attraction(this.mouse.pos, 200, -2000);
     collide = new Collision();
-    collide.interval = 3;
     _results = [];
     for (i = 0; i <= 400; i++) {
       p = new Particle(Random(0.1, 3.0));

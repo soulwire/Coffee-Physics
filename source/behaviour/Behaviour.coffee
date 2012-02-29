@@ -10,7 +10,7 @@ class Behaviour
 		@GUID = Behaviour.GUID++
 		@interval = 1
 
-		console.log @, @GUID
+		## console.log @, @GUID
 
 	apply: (p, dt, index) ->
 

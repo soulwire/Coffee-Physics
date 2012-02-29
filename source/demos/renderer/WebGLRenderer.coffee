@@ -134,7 +134,7 @@ class WebGLRenderer extends Renderer
         @springShader.attributes =
             position: @gl.getAttribLocation @springShader, 'position'
 
-        console.log @particleShader
+        ## console.log @particleShader
 
     initBuffers: (physics) ->
 
@@ -173,7 +173,7 @@ class WebGLRenderer extends Renderer
         @gl.bindBuffer @gl.ARRAY_BUFFER, @particleRadiusBuffer
         @gl.bufferData @gl.ARRAY_BUFFER, new Float32Array(radii), @gl.STATIC_DRAW
 
-        console.log @particleColourBuffer
+        ## console.log @particleColourBuffer
 
     # Creates a generic texture for particles.
     createParticleTextureData: (size = 128) ->
@@ -238,16 +238,16 @@ class WebGLRenderer extends Renderer
         @gl.attachShader prog, fs
         @gl.linkProgram prog
 
-        console.log 'Vertex Shader Compiled', @gl.getShaderParameter vs, @gl.COMPILE_STATUS
-        console.log 'Fragment Shader Compiled', @gl.getShaderParameter fs, @gl.COMPILE_STATUS
-        console.log 'Program Linked', @gl.getProgramParameter prog, @gl.LINK_STATUS
+        ## console.log 'Vertex Shader Compiled', @gl.getShaderParameter vs, @gl.COMPILE_STATUS
+        ## console.log 'Fragment Shader Compiled', @gl.getShaderParameter fs, @gl.COMPILE_STATUS
+        ## console.log 'Program Linked', @gl.getProgramParameter prog, @gl.LINK_STATUS
 
         prog
 
     # Sets the size of the viewport.
     setSize: (@width, @height) =>
 
-        console.log 'resize', @width, @height
+        ## console.log 'resize', @width, @height
 
         super @width, @height
 
@@ -330,4 +330,4 @@ class WebGLRenderer extends Renderer
 
     destroy: ->
 
-        console.log 'Destroy'
+        ## console.log 'Destroy'

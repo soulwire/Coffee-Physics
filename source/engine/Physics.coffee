@@ -5,7 +5,7 @@ class Physics
 	constructor: (@integrator = new Euler()) ->
 
 		# Fixed timestep.
-		@timestep = 1.0 / 120
+		@timestep = 1.0 / 60
 
 		# Friction within the system.
 		@viscosity = 0.005
@@ -26,7 +26,7 @@ class Physics
 		@_buffer = 0.0
 
 		# Max iterations per step.
-		@_maxSteps = 10
+		@_maxSteps = 4
 
 		# Particles in system.
 		@particles = []
