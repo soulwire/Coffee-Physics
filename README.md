@@ -2,7 +2,7 @@
 
 A lightweight physics engine, written in [CoffeeScript](http://coffeescript.org/). Why? Why not!?
 
-Early demos can be found here: [http://soulwire.co.uk/coffeephysics/](http://soulwire.co.uk/coffeephysics/)
+Early demos can be found here: [http://soulwire.github.com/Coffee-Physics/](http://soulwire.github.com/Coffee-Physics/)
 
 ### Please Note
 
