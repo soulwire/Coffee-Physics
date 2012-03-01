@@ -76,7 +76,11 @@ Demo = (function() {
   Demo.prototype.destroy = function() {
     window.removeEventListener('mousemove', this.mousemove);
     window.removeEventListener('resize', this.resize);
-    container.removeChild(this.renderer.domElement);
+    try {
+      container.removeChild(this.renderer.domElement);
+    } catch (error) {
+
+    }
     this.renderer.destroy();
     this.physics.destroy();
     this.renderer = null;

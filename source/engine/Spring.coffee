@@ -1,10 +1,13 @@
 ### Spring ###
+
 class Spring
 
 	constructor: (@p1, @p2, @restLength = 100, @stiffness = 1.0) ->
 
 		@_delta = new Vector()
 
+	# F = -kx
+	
 	apply: ->
 
 		(@_delta.copy @p2.pos).sub @p1.pos

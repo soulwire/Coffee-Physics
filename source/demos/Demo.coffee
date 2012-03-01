@@ -83,7 +83,8 @@ class Demo
 		window.removeEventListener 'resize', @resize
 
 		# Remove the render output from the DOM.
-		container.removeChild @renderer.domElement
+		try container.removeChild @renderer.domElement
+		catch error
 
 		do @renderer.destroy
 		do @physics.destroy

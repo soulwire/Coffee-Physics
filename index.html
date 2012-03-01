@@ -105,7 +105,7 @@
             var DEMOS = {
                 'Attraction': AttractionDemo,
                 'Balloon': BalloonDemo,
-                //'Bounds': BoundsDemo,
+                'Bounds': BoundsDemo,
                 'Chain': ChainDemo,
                 'Cloth': ClothDemo,
                 'Collision': CollisionDemo
@@ -139,6 +139,7 @@
 
                     if (me.demo) {
                         me.demo.destroy();
+                        me.demo = null;
                     }
 
                     me.demo = new DEMOS[name]();
@@ -162,7 +163,7 @@
                     .onChange(test.setDemo)
                     .setValue(names[0]);
 
-                //gui.add(test, 'playing');
+                gui.add(test, 'playing');
 
                 // Add stats.
                 stats = test.stats.getDomElement();
@@ -170,10 +171,6 @@
                 stats.style.left = '2px';
                 stats.style.top = '62px';
                 document.body.appendChild(stats);
-
-                window.addEventListener('click', function(){
-                    doUpdate = false;
-                });
 
                 // Start.
                 test.update();
