@@ -10,8 +10,9 @@ ChainDemo = (function(_super) {
     ChainDemo.__super__.constructor.apply(this, arguments);
   }
 
-  ChainDemo.prototype.setup = function() {
+  ChainDemo.prototype.setup = function(full) {
     var center, edge, gap, i, max, min, op, p, s, wander;
+    if (full == null) full = true;
     ChainDemo.__super__.setup.apply(this, arguments);
     this.stiffness = 1.0;
     this.spacing = 2.0;
@@ -24,7 +25,8 @@ ChainDemo = (function(_super) {
     edge = new EdgeBounce(min, max);
     center = new Vector(this.width * 0.5, this.height * 0.5);
     wander = new Wander(0.05, 100.0, 80.0);
-    for (i = 0; i <= 2000; i++) {
+    max = full ? 2000 : 600;
+    for (i = 0; 0 <= max ? i <= max : i >= max; 0 <= max ? i++ : i--) {
       p = new Particle(6.0);
       p.colour = '#FFFFFF';
       p.moveTo(center);

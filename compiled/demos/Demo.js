@@ -16,14 +16,12 @@ Demo = (function() {
     this.width = window.innerWidth;
     this.renderer = new WebGLRenderer();
     this.renderer.mouse = this.mouse;
-    if (!this.renderer.gl) {
-      alert('WebGL not detected');
-      throw 'WebGL not detected';
-    }
     this.renderTime = 0;
+    this.counter = 0;
   }
 
-  Demo.prototype.setup = function() {
+  Demo.prototype.setup = function(full) {
+    if (full == null) return full = true;
     /* Override and add paticles / springs here
     */
   };
@@ -33,7 +31,7 @@ Demo = (function() {
 
   Demo.prototype.init = function(container) {
     var particle, _i, _len, _ref;
-    this.setup();
+    this.setup(this.renderer.gl != null);
     _ref = this.physics.particles;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       particle = _ref[_i];
@@ -67,7 +65,9 @@ Demo = (function() {
 
   Demo.prototype.step = function() {
     this.physics.step();
-    return this.renderer.render(this.physics);
+    if ((this.renderer.gl != null) || ++this.counter % 3 === 0) {
+      return this.renderer.render(this.physics);
+    }
   };
 
   /* Clean up after yourself.

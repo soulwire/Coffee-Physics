@@ -1,7 +1,7 @@
 ### CollisionDemo ###
 class CollisionDemo extends Demo
 
-    setup: ->
+    setup: (full = yes) ->
 
         super
 
@@ -15,7 +15,10 @@ class CollisionDemo extends Demo
         collide = new Collision
         attraction = new Attraction @mouse.pos, 2000, 1400
 
-        for i in [0..350]
+        max = if full then 350 else 150
+        prob = if full then 0.35 else 0.5
+
+        for i in [0..max]
 
             p = new Particle (Random 0.5, 4.0)
             p.setRadius p.mass * 4
@@ -23,7 +26,7 @@ class CollisionDemo extends Demo
             p.moveTo new Vector (Random @width), (Random @height)
 
             # Connect to spring or move free.
-            if Random.bool 0.35
+            if Random.bool prob
                 s = new Spring @mouse, p, (Random 120, 180), 0.8
                 @physics.springs.push s
             else

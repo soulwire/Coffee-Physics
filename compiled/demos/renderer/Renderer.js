@@ -12,6 +12,7 @@ Renderer = (function() {
     this.renderSprings = true;
     this.renderMouse = true;
     this.initialized = false;
+    this.renderTime = 0;
   }
 
   Renderer.prototype.init = function(physics) {

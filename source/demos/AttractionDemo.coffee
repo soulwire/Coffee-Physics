@@ -1,8 +1,8 @@
 class AttractionDemo extends Demo
 
-    setup: ->
+    setup: (full = yes) ->
 
-        super
+        super full
 
         min = new Vector 0.0, 0.0
         max = new Vector @width, @height
@@ -15,7 +15,9 @@ class AttractionDemo extends Demo
         repulsion = new Attraction @mouse.pos, 200, -2000
         collide = new Collision()
 
-        for i in [0..400]
+        max = if full then 400 else 200
+
+        for i in [0..max]
 
             p = new Particle (Random 0.1, 3.0)
             p.setRadius p.mass * 4

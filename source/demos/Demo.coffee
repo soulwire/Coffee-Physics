@@ -1,7 +1,6 @@
 ### Demo ###
 class Demo
 
-	#@COLOURS = ['00aeff', '0fa954', '54396e', 'e61d5f']
 	@COLOURS = ['DC0048', 'F14646', '4AE6A9', '7CFF3F', '4EC9D9', 'E4272E']
 
 	constructor: ->
@@ -13,17 +12,17 @@ class Demo
 		@width = window.innerWidth
 
 		# Use canvas renderer by default.
-		#@renderer = new CanvasRenderer()
 		@renderer = new WebGLRenderer()
 		@renderer.mouse = @mouse
 
-		if not @renderer.gl
-			alert 'WebGL not detected'
-			throw 'WebGL not detected'
+		# if not @renderer.gl
+		# 	alert 'WebGL not detected'
+		# 	throw 'WebGL not detected'
 
 		@renderTime = 0;
+		@counter = 0
 
-	setup: ->
+	setup: (full = yes) ->
 
 		### Override and add paticles / springs here ###
 
@@ -33,7 +32,7 @@ class Demo
 		## console.log @, 'init'
 
 		# Build the scene.
-		do @setup
+		@setup @renderer.gl?
 
 		# Give the particles random colours.
 		for particle in @physics.particles
@@ -67,11 +66,21 @@ class Demo
 	### Update loop. ###
 	step: ->
 
+		#console.profile 'physics'
+
 		# Step physics.
 		do @physics.step
 
+		#console.profileEnd()
+
+		#console.profile 'render'
+
 		# Render.
-		@renderer.render @physics
+
+		# Render every frame for WebGL, or every 3 frames for canvas.
+		@renderer.render @physics if @renderer.gl? or ++@counter % 3 is 0
+
+		#console.profileEnd()
 
 	### Clean up after yourself. ###
 	destroy: ->

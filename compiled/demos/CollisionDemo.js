@@ -14,8 +14,9 @@ CollisionDemo = (function(_super) {
     CollisionDemo.__super__.constructor.apply(this, arguments);
   }
 
-  CollisionDemo.prototype.setup = function() {
-    var attraction, bounds, collide, i, max, min, p, s, _results;
+  CollisionDemo.prototype.setup = function(full) {
+    var attraction, bounds, collide, i, max, min, p, prob, s, _results;
+    if (full == null) full = true;
     CollisionDemo.__super__.setup.apply(this, arguments);
     this.physics.integrator = new Verlet();
     min = new Vector(0.0, 0.0);
@@ -23,12 +24,14 @@ CollisionDemo = (function(_super) {
     bounds = new EdgeBounce(min, max);
     collide = new Collision;
     attraction = new Attraction(this.mouse.pos, 2000, 1400);
+    max = full ? 350 : 150;
+    prob = full ? 0.35 : 0.5;
     _results = [];
-    for (i = 0; i <= 350; i++) {
+    for (i = 0; 0 <= max ? i <= max : i >= max; 0 <= max ? i++ : i--) {
       p = new Particle(Random(0.5, 4.0));
       p.setRadius(p.mass * 4);
       p.moveTo(new Vector(Random(this.width), Random(this.height)));
-      if (Random.bool(0.35)) {
+      if (Random.bool(prob)) {
         s = new Spring(this.mouse, p, Random(120, 180), 0.8);
         this.physics.springs.push(s);
       } else {

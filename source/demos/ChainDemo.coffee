@@ -1,6 +1,6 @@
 class ChainDemo extends Demo
 
-	setup: ->
+	setup: (full = yes) ->
 
 		super
 
@@ -23,7 +23,9 @@ class ChainDemo extends Demo
 
 		wander = new Wander 0.05, 100.0, 80.0
 
-		for i in [0..2000]
+		max = if full then 2000 else 600
+
+		for i in [0..max]
 
 			p = new Particle 6.0
 			p.colour = '#FFFFFF'

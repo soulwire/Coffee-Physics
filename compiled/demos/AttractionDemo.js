@@ -10,9 +10,10 @@ AttractionDemo = (function(_super) {
     AttractionDemo.__super__.constructor.apply(this, arguments);
   }
 
-  AttractionDemo.prototype.setup = function() {
+  AttractionDemo.prototype.setup = function(full) {
     var attraction, bounds, collide, i, max, min, p, repulsion, _results;
-    AttractionDemo.__super__.setup.apply(this, arguments);
+    if (full == null) full = true;
+    AttractionDemo.__super__.setup.call(this, full);
     min = new Vector(0.0, 0.0);
     max = new Vector(this.width, this.height);
     bounds = new EdgeBounce(min, max);
@@ -20,8 +21,9 @@ AttractionDemo = (function(_super) {
     attraction = new Attraction(this.mouse.pos, 1200, 1200);
     repulsion = new Attraction(this.mouse.pos, 200, -2000);
     collide = new Collision();
+    max = full ? 400 : 200;
     _results = [];
-    for (i = 0; i <= 400; i++) {
+    for (i = 0; 0 <= max ? i <= max : i >= max; 0 <= max ? i++ : i--) {
       p = new Particle(Random(0.1, 3.0));
       p.setRadius(p.mass * 4);
       p.moveTo(new Vector(Random(this.width), Random(this.height)));

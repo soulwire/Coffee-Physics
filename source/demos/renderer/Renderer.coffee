@@ -10,6 +10,7 @@ class Renderer
         @renderSprings = true
         @renderMouse = true
         @initialized = false
+        @renderTime = 0
 
     init: (physics) ->
 

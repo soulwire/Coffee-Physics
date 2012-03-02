@@ -1,14 +1,16 @@
 ### BalloonDemo ###
 class BalloonDemo extends Demo
 
-	setup: ->
+	setup: (full = yes) ->
 
 		super
 
 		@physics.integrator = new ImprovedEuler()
 		attraction = new Attraction @mouse.pos
 
-		for i in [0..400]
+		max = if full then 400 else 200
+
+		for i in [0..max]
 
 			p = new Particle (Random 0.25, 4.0)
 			p.setRadius p.mass * 8

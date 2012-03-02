@@ -1,6 +1,6 @@
 class ClothDemo extends Demo
 
-	setup: ->
+	setup: (full = yes) ->
 
 		super
 
@@ -16,9 +16,9 @@ class ClothDemo extends Demo
 		@physics.behaviours.push @gravity
 
 		stiffness = 0.5
-		size = 8
-		rows = 30
-		cols = 55
+		size = if full then 8 else 10
+		rows = if full then 30 else 25
+		cols = if full then 55 else 40
 		cell = []
 
 		sx = @width * 0.5 - cols * size * 0.5

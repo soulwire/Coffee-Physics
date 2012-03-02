@@ -10,8 +10,9 @@ ClothDemo = (function(_super) {
     ClothDemo.__super__.constructor.apply(this, arguments);
   }
 
-  ClothDemo.prototype.setup = function() {
+  ClothDemo.prototype.setup = function(full) {
     var cell, cols, p, rows, s, size, stiffness, sx, sy, x, y;
+    if (full == null) full = true;
     ClothDemo.__super__.setup.apply(this, arguments);
     this.renderer.renderParticles = false;
     this.physics.integrator = new Verlet();
@@ -20,9 +21,9 @@ ClothDemo = (function(_super) {
     this.gravity = new ConstantForce(new Vector(0.0, 80.0));
     this.physics.behaviours.push(this.gravity);
     stiffness = 0.5;
-    size = 8;
-    rows = 30;
-    cols = 55;
+    size = full ? 8 : 10;
+    rows = full ? 30 : 25;
+    cols = full ? 55 : 40;
     cell = [];
     sx = this.width * 0.5 - cols * size * 0.5;
     sy = this.height * 0.5 - rows * size * 0.5;
