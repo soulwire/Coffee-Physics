@@ -3,67 +3,122 @@
     <title>CoffeePhysics</title>
     <!-- <link href='http://fonts.googleapis.com/css?family=Play:400,700' rel='stylesheet' type='text/css'> -->
     <style type="text/css" media="screen">
+
         html, body {
+            background: #1a1a1a;
             font-family: 'Play', sans-serif;
             margin: 0;
         }
-        header {
-            background: rgba(0,0,0,0.85);
+
+        .stats {
             position: absolute;
-            text-indent: 10px;
-            height: 60px;
-            width: 100%;
-            left: 0px;
-            top: 0px;
+            right: 20px;
+            top: 20px;
         }
-        header h1 {
-            font-size: 24px;
+
+        #content {
+            position: absolute;
+            width: 260px;
+            left: 20px;
+            top: 20px;
+        }
+
+        #info {
+            background: rgba(0,0,0,0.8);
+            padding: 12px 10px;
+            margin-bottom: 1px;
+            color: #fff;
+        }
+
+        #info h1 {
+            line-height: 22px;
             font-weight: 300;
-            line-height: 28px;
-            margin: 8px 0 0 0;
-            color: #FFFFFF;
+            font-size: 18px;
+            margin: 0;
         }
-        header h2 {
+
+        #info h2 {
+            line-height: 14px;
+            font-weight: 300;
             font-size: 12px;
-            font-weight: 300;
-            line-height: 1;
-            margin: 0px;
-            color: #AAAAAA;
+            color: rgba(255,255,255,0.8);
+            margin: 0 0 6px 0;
         }
-        #container {
-            background: #252525;
-            margin: auto;
-            height: 100%;
-            width: 100%;
-        }
-        .gui {
-            margin-top: 62px;
-        }
-        #start {
-            position: absolute;
-            text-align: center;
-            display: block;
-            margin-left: -50px;
-            margin-top: -10px;
+
+        #info a {
+            text-transform: uppercase;
             text-decoration: none;
-            font-size: 24px;
-            height: 20px;
-            width: 100px;
-            color: #FFF;
-            left: 50%;
-            top: 50%;
+            border-bottom: 1px dotted rgba(255,255,255,0.2);
+            margin-right: 4px;
+            line-height: 20px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
         }
+
+        #info a:hover {
+            border-bottom: 1px dotted rgba(255,255,255,0.6);
+            color: rgba(255,255,255,1.0);
+        }
+
+        #demo-select ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        #demo-select li {
+            list-style: none;
+            margin: 1px 0;
+        }
+
+        #demo-select a {
+            -webkit-transition: all 300ms ease-out;
+            background: rgba(0,0,0,0.8);
+            text-decoration: none;
+            padding-left: 10px;
+            line-height: 32px;
+            font-size: 12px;
+            display: block;
+            color: rgba(255,255,255,0.5);
+            opacity: 0.2;
+        }
+
+        #demo-select a:hover,
+        #demo-select a.active {
+            color: rgba(255,255,255,1.0);
+        }
+
+        #demo-select a.active {
+            border-left: 4px solid #fff;
+            opacity: 0.5;
+        }
+
+        #content:hover #demo-select a {
+            opacity: 1.0;
+        }
+
     </style>
 </head>
 <body>
-    <header>
-        <h1>CoffeePhysics</h1>
-        <h2>A JavaScript / CoffeeScript Physics Engine</h2>
-    </header>
+
+    <section id="content">
+
+        <article id="info">
+            <header>
+                <h1>CoffeePhysics</h1>
+                <h2>A Lightweight CoffeeScript Physics Engine</h2>
+            </header>
+            <a href="https://github.com/soulwire/Coffee-Physics/zipball/master">Download</a>
+            <a href="https://github.com/soulwire/Coffee-Physics">View on Github</a>
+        </article>
+
+        <nav id="demo-select"></nav>
+
+    </section>
+
     <div id="container"></div>
     <!-- Libraries -->
-    <script src="library/Stats.js"></script>
-    <script src="library/dat.gui.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://raw.github.com/mrdoob/stats.js/master/build/Stats.js"></script>
     <!-- Core -->
     <script src="compiled/base.js"></script>
     <script src="compiled/math/Random.js"></script>
@@ -100,81 +155,98 @@
     <script src="compiled/demos/CollisionDemo.js"></script>
     <script>
 
-        (function(){
+        (function() {
 
+            // Available demos.
             var DEMOS = {
                 'Attraction': AttractionDemo,
-                'Balloon': BalloonDemo,
-                'Bounds': BoundsDemo,
-                'Chain': ChainDemo,
-                'Cloth': ClothDemo,
-                'Collision': CollisionDemo
+                'Balloon':    BalloonDemo,
+                'Bounds':     BoundsDemo,
+                'Chain':      ChainDemo,
+                'Cloth':      ClothDemo,
+                'Collision':  CollisionDemo
             };
 
-            var doUpdate = true;
-            
-            var TestBed = function() {
+            var list;
+            var demo;
+            var stats;
+            var items;
+            var container;
 
-                var me = this;
-                
-                me.demo = null;
-                me.playing = true;
-                me.stats = new Stats();
-                me.Demo = '';
-                me.container = document.getElementById('container');
+            // Initialises the testbed and starts the default demo.
+            function init() {
 
-                me.update = function() {
+                items = {};
+                stats = new Stats();
+                list = $('#demo-select');
+                container = $('#container');
 
-                    if (doUpdate) {
-                        requestAnimationFrame(me.update);
-                    }
-                    me.stats.update();
+                var item;
 
-                    if (me.demo && me.playing) {
-                        me.demo.step();
-                    }
+                for (var name in DEMOS) {
+
+                    item = $('<a href="#"/>')
+                        .click(generateClick(name))
+                        .data('demo', name)
+                        .text(name);
+
+                    items[name] = item;
+                    list.append(item);
                 }
 
-                me.setDemo = function(name) {
+                // Append stats.
+                stats.getDomElement().className = 'stats';
+                document.body.appendChild(stats.getDomElement());
 
-                    if (me.demo) {
-                        me.demo.destroy();
-                        me.demo = null;
-                    }
-
-                    me.demo = new DEMOS[name]();
-                    me.demo.init(me.container);
-                }
-
-            };
-
-            window.onload = function() {
-
-                var names = []; for (var name in DEMOS) { names.push(name); }
-                
-                // Create testbed
-                var test = new TestBed();
-
-                // Create GUI.
-                var gui = new dat.GUI();
-
-                // Demo selector.
-                gui.add(test, 'Demo', names)
-                    .onChange(test.setDemo)
-                    .setValue(names[5]);
-
-                gui.add(test, 'playing');
-
-                // Add stats.
-                stats = test.stats.getDomElement();
-                stats.style.position = 'absolute';
-                stats.style.left = '2px';
-                stats.style.top = '62px';
-                document.body.appendChild(stats);
-
-                // Start.
-                test.update();
+                // Set default demo and start updating.
+                setDemo('Attraction');
+                update();
             }
+
+            // Generates a click handler.
+            function generateClick(name) {
+                return function() {
+                    setDemo(name);
+                    return false;
+                };
+            }
+
+            // Updates current demo.
+            function update() {
+
+                requestAnimationFrame(update);
+
+                if (demo) {
+                    demo.step();
+                }
+
+                stats.update();
+            }
+
+            // Sets the current demo.
+            function setDemo(name) {
+                
+                // Kill any running demo.
+                if (demo) {
+                    demo.destroy();
+                    demo = null;
+                }
+
+                // Initialise new demo.
+                demo = new DEMOS[name]();
+                demo.init(container.get(0));
+
+                // Activate / deactivate links.
+                for (var id in items) {
+                    if (id === name) {
+                        items[id].addClass('active');
+                    } else {
+                        items[id].removeClass('active');
+                    }
+                }
+            }
+
+            init();
 
         })();
         
