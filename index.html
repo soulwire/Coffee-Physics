@@ -252,7 +252,12 @@
 
             function onKeyDown(event) {
                 if (event.which === 32) {
+
                     playing = !playing;
+                    
+                    if (playing && demo) {
+                        demo.physics._clock = new Date().getTime();
+                    }
                 }
             }
 
