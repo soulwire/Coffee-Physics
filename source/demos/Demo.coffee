@@ -12,7 +12,8 @@ class Demo
 		@width = window.innerWidth
 
 		# Use canvas renderer by default.
-		@renderer = new WebGLRenderer()
+		#@renderer = new WebGLRenderer()
+		@renderer = new DOMRenderer()
 		@renderer.mouse = @mouse
 
 		# if not @renderer.gl

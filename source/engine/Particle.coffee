@@ -1,7 +1,12 @@
 ### Particle ###
 class Particle
 
+	@GUID = 0
+
 	constructor: (@mass = 1.0) ->
+
+		# Set a unique id.
+		@id = 'p' + Particle.GUID++
 
 		# Set initial mass.
 		@setMass @mass

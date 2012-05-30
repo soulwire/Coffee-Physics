@@ -100,6 +100,8 @@
 </head>
 <body>
 
+    <div id="container"></div>
+
     <section id="content">
 
         <article id="info">
@@ -115,7 +117,6 @@
 
     </section>
 
-    <div id="container"></div>
     <!-- Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="https://raw.github.com/mrdoob/stats.js/master/build/Stats.js"></script>
@@ -251,7 +252,10 @@
             }
 
             function onKeyDown(event) {
+
                 if (event.which === 32) {
+
+                    event.preventDefault();
 
                     playing = !playing;
                     

@@ -4,8 +4,11 @@ var Particle;
 
 Particle = (function() {
 
+  Particle.GUID = 0;
+
   function Particle(mass) {
     this.mass = mass != null ? mass : 1.0;
+    this.id = 'p' + Particle.GUID++;
     this.setMass(this.mass);
     this.setRadius(1.0);
     this.fixed = false;
