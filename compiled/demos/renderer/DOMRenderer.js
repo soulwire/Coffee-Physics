@@ -29,10 +29,9 @@ DOMRenderer = (function(_super) {
   }
 
   DOMRenderer.prototype.init = function(physics) {
-    var el, p, st, _i, _len, _ref, _results;
+    var el, mr, p, st, _i, _len, _ref;
     DOMRenderer.__super__.init.call(this, physics);
     _ref = physics.particles;
-    _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       p = _ref[_i];
       el = document.createElement('span');
@@ -47,9 +46,22 @@ DOMRenderer = (function(_super) {
       st.height = p.radius * 2;
       st.width = p.radius * 2;
       this.domElement.appendChild(el);
-      _results.push(p.domElement = el);
+      p.domElement = el;
     }
-    return _results;
+    el = document.createElement('span');
+    st = el.style;
+    mr = 20;
+    st.backgroundColor = '#ffffff';
+    st.borderRadius = mr;
+    st.marginLeft = -mr;
+    st.marginTop = -mr;
+    st.position = 'absolute';
+    st.display = 'block';
+    st.opacity = 0.1;
+    st.height = mr * 2;
+    st.width = mr * 2;
+    this.domElement.appendChild(el);
+    return this.mouse.domElement = el;
   };
 
   DOMRenderer.prototype.render = function(physics) {
@@ -80,6 +92,14 @@ DOMRenderer = (function(_super) {
       }
       this.ctx.stroke();
     }
+    if (this.renderMouse) {
+      if (this.useGPU) {
+        this.mouse.domElement.style.WebkitTransform = "translate3d(" + (this.mouse.pos.x | 0) + "px," + (this.mouse.pos.y | 0) + "px,0px)";
+      } else {
+        this.mouse.domElement.style.left = this.mouse.pos.x;
+        this.mouse.domElement.style.top = this.mouse.pos.y;
+      }
+    }
     return this.renderTime = new Date().getTime() - time;
   };
 
@@ -89,6 +109,15 @@ DOMRenderer = (function(_super) {
     DOMRenderer.__super__.setSize.call(this, this.width, this.height);
     this.canvas.width = this.width;
     return this.canvas.height = this.height;
+  };
+
+  DOMRenderer.prototype.destroy = function() {
+    var _results;
+    _results = [];
+    while (this.domElement.hasChildNodes()) {
+      _results.push(this.domElement.removeChild(this.domElement.lastChild));
+    }
+    return _results;
   };
 
   return DOMRenderer;

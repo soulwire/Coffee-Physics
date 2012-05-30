@@ -60,17 +60,21 @@
             color: rgba(255,255,255,1.0);
         }
 
-        #demo-select ul {
+        .select {
+            margin-bottom: 10px;
+        }
+
+        .select ul {
             padding: 0;
             margin: 0;
         }
 
-        #demo-select li {
+        .select li {
             list-style: none;
             margin: 1px 0;
         }
 
-        #demo-select a {
+        .select a {
             -webkit-transition: all 300ms ease-out;
             background: rgba(0,0,0,0.8);
             text-decoration: none;
@@ -82,17 +86,17 @@
             opacity: 0.2;
         }
 
-        #demo-select a:hover,
-        #demo-select a.active {
+        .select a:hover,
+        .select a.active {
             color: rgba(255,255,255,1.0);
         }
 
-        #demo-select a.active {
+        .select a.active {
             border-left: 4px solid #fff;
             opacity: 0.5;
         }
 
-        #content:hover #demo-select a {
+        #content:hover .select a {
             opacity: 1.0;
         }
 
@@ -113,7 +117,12 @@
             <a href="https://github.com/soulwire/Coffee-Physics">View on Github</a>
         </article>
 
-        <nav id="demo-select"></nav>
+        <nav id="demo-select" class="select"></nav>
+        <nav id="renderer-select" class="select">
+            <a href="#" data-renderer="WebGLRenderer">WebGL</a>
+            <a href="#" data-renderer="CanvasRenderer">Canvas</a>
+            <a href="#" data-renderer="DOMRenderer">DOM</a>
+        </nav>
 
     </section>
 
@@ -173,7 +182,11 @@
             var stats;
             var items;
             var playing;
+            var demoName;
+            var renderer;
             var container;
+
+            var $renderer;
 
             // Initialises the testbed and starts the default demo.
             function init() {
@@ -182,7 +195,9 @@
                 stats = new Stats();
                 list = $('#demo-select');
                 playing = true;
+                renderer = 'WebGLRenderer';
                 container = $('#container');
+                $renderer = $('#renderer-select a');
 
                 var item;
 
@@ -201,11 +216,21 @@
                 stats.domElement.className = 'stats';
                 document.body.appendChild(stats.domElement);
 
+                $renderer.click(onRendererSelected);
                 $(window).bind('keydown', onKeyDown);
 
                 // Set default demo and start updating.
                 setDemo('Attraction');
                 update();
+
+                // Highlight current renderer.
+                $renderer.each(function(index, el) {
+                    var $el = $(el);
+                    var type = self[ $el.data('renderer') ];
+                    if ( demo.renderer instanceof type ) {
+                        $el.addClass('active');
+                    }
+                });
             }
 
             // Generates a click handler.
@@ -230,6 +255,8 @@
 
             // Sets the current demo.
             function setDemo(name) {
+
+                demoName = name
                 
                 // Kill any running demo.
                 if (demo) {
@@ -239,7 +266,7 @@
 
                 // Initialise new demo.
                 demo = new DEMOS[name]();
-                demo.init(container.get(0));
+                demo.init(container.get(0), new self[ renderer ]());
 
                 // Activate / deactivate links.
                 for (var id in items) {
@@ -249,6 +276,22 @@
                         items[id].removeClass('active');
                     }
                 }
+
+                // Provide access from console for debugging.
+                self.__demo = demo;
+            }
+
+            function onRendererSelected(event) {
+                
+                var $selected = $(event.currentTarget);
+                
+                renderer = $selected.data('renderer');
+                setDemo(demoName);
+
+                $renderer.removeClass('active');
+                $selected.addClass('active');
+
+                return false;
             }
 
             function onKeyDown(event) {

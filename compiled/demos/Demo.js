@@ -14,8 +14,6 @@ Demo = (function() {
     this.mouse.fixed = true;
     this.height = window.innerHeight;
     this.width = window.innerWidth;
-    this.renderer = new CanvasRenderer();
-    this.renderer.mouse = this.mouse;
     this.renderTime = 0;
     this.counter = 0;
   }
@@ -29,9 +27,11 @@ Demo = (function() {
   /* Initialise the demo (override).
   */
 
-  Demo.prototype.init = function(container) {
+  Demo.prototype.init = function(container, renderer) {
     var particle, _i, _len, _ref;
-    this.setup(this.renderer.gl != null);
+    this.container = container;
+    if (renderer == null) renderer = new WebGLRenderer();
+    this.setup(renderer.gl != null);
     _ref = this.physics.particles;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       particle = _ref[_i];
@@ -39,8 +39,7 @@ Demo = (function() {
     }
     window.addEventListener('mousemove', this.mousemove, false);
     window.addEventListener('resize', this.resize, false);
-    container.appendChild(this.renderer.domElement);
-    this.renderer.init(this.physics);
+    this.setRenderer(renderer);
     return this.resize();
   };
 
@@ -51,13 +50,6 @@ Demo = (function() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     return this.renderer.setSize(this.width, this.height);
-  };
-
-  /* Handler for window mousemove event.
-  */
-
-  Demo.prototype.mousemove = function(event) {
-    return this.mouse.pos.set(event.clientX, event.clientY);
   };
 
   /* Update loop.
@@ -86,6 +78,25 @@ Demo = (function() {
     this.renderer = null;
     this.physics = null;
     return this.mouse = null;
+  };
+
+  Demo.prototype.setRenderer = function(renderer) {
+    if (this.renderer) {
+      this.container.removeChild(this.renderer.domElement);
+      this.renderer.destroy();
+    }
+    this.renderer = renderer;
+    this.renderer.mouse = this.mouse;
+    this.container.appendChild(this.renderer.domElement);
+    this.renderer.init(this.physics);
+    return this.resize();
+  };
+
+  /* Handler for window mousemove event.
+  */
+
+  Demo.prototype.mousemove = function(event) {
+    return this.mouse.pos.set(event.clientX, event.clientY);
   };
 
   return Demo;

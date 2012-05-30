@@ -29,6 +29,7 @@ class DOMRenderer extends Renderer
 
 		super physics
 
+		# Set up particle DOM elements
 		for p in physics.particles
 
 			el = document.createElement 'span'
@@ -47,6 +48,24 @@ class DOMRenderer extends Renderer
 			@domElement.appendChild el
 			p.domElement = el
 
+		# Set up mouse DOM element
+		el = document.createElement 'span'
+		st = el.style
+		mr = 20
+
+		st.backgroundColor = '#ffffff'
+		st.borderRadius = mr
+		st.marginLeft = -mr
+		st.marginTop = -mr
+		st.position = 'absolute'
+		st.display = 'block'
+		st.opacity = 0.1
+		st.height = mr * 2
+		st.width = mr * 2
+
+		@domElement.appendChild el
+		@mouse.domElement = el
+
 	render: (physics) ->
 
 		super physics
@@ -62,7 +81,6 @@ class DOMRenderer extends Renderer
 					p.domElement.style.WebkitTransform = """
 						translate3d(#{p.pos.x|0}px,#{p.pos.y|0}px,0px)
 						"""
-
 				else
 
 					p.domElement.style.left = p.pos.x
@@ -71,7 +89,7 @@ class DOMRenderer extends Renderer
 		if @renderSprings
 
 			@canvas.width = @canvas.width
-			
+
 			@ctx.strokeStyle = 'rgba(255,255,255,0.1)'
 			@ctx.beginPath()
 
@@ -81,6 +99,18 @@ class DOMRenderer extends Renderer
 			
 			@ctx.stroke()
 
+		if @renderMouse
+
+			if @useGPU
+
+				@mouse.domElement.style.WebkitTransform = """
+					translate3d(#{@mouse.pos.x|0}px,#{@mouse.pos.y|0}px,0px)
+					"""
+			else
+
+				@mouse.domElement.style.left = @mouse.pos.x
+				@mouse.domElement.style.top = @mouse.pos.y
+
 		@renderTime = new Date().getTime() - time
 
 	setSize: (@width, @height) =>
@@ -89,3 +119,8 @@ class DOMRenderer extends Renderer
 
         @canvas.width = @width
         @canvas.height = @height
+
+    destroy: ->
+
+    	while @domElement.hasChildNodes()
+    		@domElement.removeChild @domElement.lastChild

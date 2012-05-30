@@ -11,16 +11,6 @@ class Demo
 		@height = window.innerHeight
 		@width = window.innerWidth
 
-		# Use canvas renderer by default.
-		#@renderer = new WebGLRenderer()
-		#@renderer = new DOMRenderer()
-		@renderer = new CanvasRenderer()
-		@renderer.mouse = @mouse
-
-		# if not @renderer.gl
-		# 	alert 'WebGL not detected'
-		# 	throw 'WebGL not detected'
-
 		@renderTime = 0;
 		@counter = 0
 
@@ -29,12 +19,10 @@ class Demo
 		### Override and add paticles / springs here ###
 
 	### Initialise the demo (override). ###
-	init: (container) ->
-
-		## console.log @, 'init'
+	init: (@container, renderer = new WebGLRenderer()) ->
 
 		# Build the scene.
-		@setup @renderer.gl?
+		@setup renderer.gl?
 
 		# Give the particles random colours.
 		for particle in @physics.particles
@@ -44,11 +32,8 @@ class Demo
 		window.addEventListener 'mousemove', @mousemove, false
 		window.addEventListener 'resize', @resize, false
 
-		# Add to render output to the DOM.
-		container.appendChild @renderer.domElement
-
-		# Prepare the renderer.
-		@renderer.init @physics
+		# Set the default renderer.
+		@setRenderer renderer
 
 		# Resize for the sake of the renderer.
 		do @resize
@@ -59,11 +44,6 @@ class Demo
 		@width = window.innerWidth
 		@height = window.innerHeight
 		@renderer.setSize @width, @height
-
-	### Handler for window mousemove event. ###
-	mousemove: (event) =>
-
-		@mouse.pos.set event.clientX, event.clientY
 
 	### Update loop. ###
 	step: ->
@@ -103,3 +83,29 @@ class Demo
 		@renderer = null
 		@physics = null
 		@mouse = null
+
+	setRenderer: (renderer) ->
+
+		if @renderer
+			@container.removeChild @renderer.domElement
+			do @renderer.destroy
+
+		@renderer = renderer
+		@renderer.mouse = @mouse
+
+		# Add to render output to the DOM.
+		@container.appendChild @renderer.domElement
+
+		# Prepare the renderer.
+		@renderer.init @physics
+
+		# if not @renderer.gl
+		# 	alert 'WebGL not detected'
+		# 	throw 'WebGL not detected'
+
+		do @resize
+
+	### Handler for window mousemove event. ###
+	mousemove: (event) =>
+
+		@mouse.pos.set event.clientX, event.clientY
