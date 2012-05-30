@@ -58,14 +58,14 @@ CanvasRenderer = (function(_super) {
     }
     if (this.renderSprings) {
       this.ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      this.ctx.beginPath();
       _ref3 = physics.springs;
       for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
         s = _ref3[_k];
-        this.ctx.beginPath();
         this.ctx.moveTo(s.p1.pos.x, s.p1.pos.y);
         this.ctx.lineTo(s.p2.pos.x, s.p2.pos.y);
-        this.ctx.stroke();
       }
+      this.ctx.stroke();
     }
     if (this.renderMouse) {
       this.min.x = Math.min(this.min.x, this.mouse.pos.x - 20);
