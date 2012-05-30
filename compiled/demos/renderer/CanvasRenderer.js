@@ -13,9 +13,6 @@ CanvasRenderer = (function(_super) {
     this.setSize = __bind(this.setSize, this);    CanvasRenderer.__super__.constructor.apply(this, arguments);
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
-    this.pad = new Vector(2.0, 2.0);
-    this.min = new Vector;
-    this.max = new Vector;
     this.domElement = this.canvas;
   }
 

@@ -8,10 +8,6 @@ class CanvasRenderer extends Renderer
         @canvas = document.createElement 'canvas'
         @ctx = @canvas.getContext '2d'
 
-        @pad = new Vector 2.0, 2.0
-        @min = new Vector
-        @max = new Vector
-
         # Set the DOM element.
         @domElement = @canvas
 
