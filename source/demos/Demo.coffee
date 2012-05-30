@@ -13,7 +13,8 @@ class Demo
 
 		# Use canvas renderer by default.
 		#@renderer = new WebGLRenderer()
-		@renderer = new DOMRenderer()
+		#@renderer = new DOMRenderer()
+		@renderer = new CanvasRenderer()
 		@renderer.mouse = @mouse
 
 		# if not @renderer.gl

@@ -32,23 +32,10 @@ class CanvasRenderer extends Renderer
         dir = new Vector()
 
         # Clear canvas.
-        @min.sub @pad
-        @max.add @pad
-        @ctx.clearRect @min.x, @min.y, @max.x - @min.x, @max.y - @min.y
+        @canvas.width = @canvas.width
 
         @ctx.globalCompositeOperation = 'lighter'
         @ctx.lineWidth = 1
-
-        # Compute redraw region.
-        @max.set 0.0, 0.0
-        @min.set @width, @height
-
-        for p in physics.particles
-
-            @min.x = Math.min @min.x, p.pos.x - p.radius
-            @min.y = Math.min @min.y, p.pos.y - p.radius
-            @max.x = Math.max @max.x, p.pos.x + p.radius
-            @max.y = Math.max @max.y, p.pos.y + p.radius
 
         # Draw particles.
         if @renderParticles
@@ -63,8 +50,6 @@ class CanvasRenderer extends Renderer
                 @ctx.fillStyle = '#' + (p.colour or 'FFFFFF')
                 @ctx.fill()
 
-                @ctx.restore()
-
         if @renderSprings
         
             @ctx.strokeStyle = 'rgba(255,255,255,0.1)'
@@ -77,11 +62,6 @@ class CanvasRenderer extends Renderer
             @ctx.stroke()
 
         if @renderMouse
-
-            @min.x = Math.min @min.x, @mouse.pos.x - 20
-            @min.y = Math.min @min.y, @mouse.pos.y - 20
-            @max.x = Math.max @max.x, @mouse.pos.x + 20
-            @max.y = Math.max @max.y, @mouse.pos.y + 20
             
             # Draw mouse.
             @ctx.fillStyle = 'rgba(255,255,255,0.1)'

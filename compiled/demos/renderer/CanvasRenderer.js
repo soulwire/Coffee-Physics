@@ -24,54 +24,37 @@ CanvasRenderer = (function(_super) {
   };
 
   CanvasRenderer.prototype.render = function(physics) {
-    var TWO_PI, dir, p, s, time, vel, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3;
+    var TWO_PI, dir, p, s, time, vel, _i, _j, _len, _len2, _ref, _ref2;
     CanvasRenderer.__super__.render.call(this, physics);
     time = new Date().getTime();
     vel = new Vector();
     dir = new Vector();
-    this.min.sub(this.pad);
-    this.max.add(this.pad);
-    this.ctx.clearRect(this.min.x, this.min.y, this.max.x - this.min.x, this.max.y - this.min.y);
+    this.canvas.width = this.canvas.width;
     this.ctx.globalCompositeOperation = 'lighter';
     this.ctx.lineWidth = 1;
-    this.max.set(0.0, 0.0);
-    this.min.set(this.width, this.height);
-    _ref = physics.particles;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      p = _ref[_i];
-      this.min.x = Math.min(this.min.x, p.pos.x - p.radius);
-      this.min.y = Math.min(this.min.y, p.pos.y - p.radius);
-      this.max.x = Math.max(this.max.x, p.pos.x + p.radius);
-      this.max.y = Math.max(this.max.y, p.pos.y + p.radius);
-    }
     if (this.renderParticles) {
       TWO_PI = Math.PI * 2;
-      _ref2 = physics.particles;
-      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-        p = _ref2[_j];
+      _ref = physics.particles;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        p = _ref[_i];
         this.ctx.beginPath();
         this.ctx.arc(p.pos.x, p.pos.y, p.radius, 0, TWO_PI, false);
         this.ctx.fillStyle = '#' + (p.colour || 'FFFFFF');
         this.ctx.fill();
-        this.ctx.restore();
       }
     }
     if (this.renderSprings) {
       this.ctx.strokeStyle = 'rgba(255,255,255,0.1)';
       this.ctx.beginPath();
-      _ref3 = physics.springs;
-      for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
-        s = _ref3[_k];
+      _ref2 = physics.springs;
+      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+        s = _ref2[_j];
         this.ctx.moveTo(s.p1.pos.x, s.p1.pos.y);
         this.ctx.lineTo(s.p2.pos.x, s.p2.pos.y);
       }
       this.ctx.stroke();
     }
     if (this.renderMouse) {
-      this.min.x = Math.min(this.min.x, this.mouse.pos.x - 20);
-      this.min.y = Math.min(this.min.y, this.mouse.pos.y - 20);
-      this.max.x = Math.max(this.max.x, this.mouse.pos.x + 20);
-      this.max.y = Math.max(this.max.y, this.mouse.pos.y + 20);
       this.ctx.fillStyle = 'rgba(255,255,255,0.1)';
       this.ctx.beginPath();
       this.ctx.arc(this.mouse.pos.x, this.mouse.pos.y, 20, 0, TWO_PI);
