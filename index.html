@@ -171,6 +171,7 @@
             var demo;
             var stats;
             var items;
+            var playing;
             var container;
 
             // Initialises the testbed and starts the default demo.
@@ -179,6 +180,7 @@
                 items = {};
                 stats = new Stats();
                 list = $('#demo-select');
+                playing = true;
                 container = $('#container');
 
                 var item;
@@ -198,6 +200,8 @@
                 stats.domElement.className = 'stats';
                 document.body.appendChild(stats.domElement);
 
+                $(window).bind('keydown', onKeyDown);
+
                 // Set default demo and start updating.
                 setDemo('Attraction');
                 update();
@@ -216,7 +220,7 @@
 
                 requestAnimationFrame(update);
 
-                if (demo) {
+                if (playing && demo) {
                     demo.step();
                 }
 
@@ -243,6 +247,12 @@
                     } else {
                         items[id].removeClass('active');
                     }
+                }
+            }
+
+            function onKeyDown(event) {
+                if (event.which === 32) {
+                    playing = !playing;
                 }
             }
 
