@@ -19,7 +19,7 @@ class Demo
 		### Override and add paticles / springs here ###
 
 	### Initialise the demo (override). ###
-	init: (@container, renderer = new WebGLRenderer()) ->
+	init: (@container, @renderer = new WebGLRenderer()) ->
 
 		# Build the scene.
 		@setup renderer.gl?
@@ -32,8 +32,12 @@ class Demo
 		window.addEventListener 'mousemove', @mousemove, false
 		window.addEventListener 'resize', @resize, false
 
-		# Set the default renderer.
-		@setRenderer renderer
+		# Add to render output to the DOM.
+		@container.appendChild @renderer.domElement
+
+		# Prepare the renderer.
+		@renderer.mouse = @mouse
+		@renderer.init @physics
 
 		# Resize for the sake of the renderer.
 		do @resize
@@ -84,28 +88,8 @@ class Demo
 		@physics = null
 		@mouse = null
 
-	setRenderer: (renderer) ->
-
-		if @renderer
-			@container.removeChild @renderer.domElement
-			do @renderer.destroy
-
-		@renderer = renderer
-		@renderer.mouse = @mouse
-
-		# Add to render output to the DOM.
-		@container.appendChild @renderer.domElement
-
-		# Prepare the renderer.
-		@renderer.init @physics
-
-		# if not @renderer.gl
-		# 	alert 'WebGL not detected'
-		# 	throw 'WebGL not detected'
-
-		do @resize
-
 	### Handler for window mousemove event. ###
 	mousemove: (event) =>
 
 		@mouse.pos.set event.clientX, event.clientY
+		
