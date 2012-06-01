@@ -47,8 +47,9 @@ Demo = (function() {
         particle.colour = Random.item(Demo.COLOURS);
       }
     }
-    window.addEventListener('mousemove', this.mousemove, false);
-    window.addEventListener('resize', this.resize, false);
+    document.addEventListener('touchmove', this.mousemove, false);
+    document.addEventListener('mousemove', this.mousemove, false);
+    document.addEventListener('resize', this.resize, false);
     this.container.appendChild(this.renderer.domElement);
     this.renderer.mouse = this.mouse;
     this.renderer.init(this.physics);
@@ -81,8 +82,9 @@ Demo = (function() {
 
 
   Demo.prototype.destroy = function() {
-    window.removeEventListener('mousemove', this.mousemove);
-    window.removeEventListener('resize', this.resize);
+    document.removeEventListener('touchmove', this.mousemove, false);
+    document.removeEventListener('mousemove', this.mousemove, false);
+    document.removeEventListener('resize', this.resize, false);
     try {
       container.removeChild(this.renderer.domElement);
     } catch (error) {
@@ -100,7 +102,14 @@ Demo = (function() {
 
 
   Demo.prototype.mousemove = function(event) {
-    return this.mouse.pos.set(event.clientX, event.clientY);
+    var touch;
+    event.preventDefault();
+    if (event.touches && !!event.touches.length) {
+      touch = event.touches[0];
+      return this.mouse.pos.set(touch.pageX, touch.pageY);
+    } else {
+      return this.mouse.pos.set(event.clientX, event.clientY);
+    }
   };
 
   return Demo;

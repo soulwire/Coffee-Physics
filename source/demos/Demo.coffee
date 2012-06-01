@@ -29,8 +29,9 @@ class Demo
 			particle.colour ?= Random.item Demo.COLOURS
 
 		# Add event handlers.
-		window.addEventListener 'mousemove', @mousemove, false
-		window.addEventListener 'resize', @resize, false
+		document.addEventListener 'touchmove', @mousemove, false
+		document.addEventListener 'mousemove', @mousemove, false
+		document.addEventListener 'resize', @resize, false
 
 		# Add to render output to the DOM.
 		@container.appendChild @renderer.domElement
@@ -74,8 +75,9 @@ class Demo
 		## console.log @, 'destroy'
 
 		# Remove event handlers.
-		window.removeEventListener 'mousemove', @mousemove
-		window.removeEventListener 'resize', @resize
+		document.removeEventListener 'touchmove', @mousemove, false
+		document.removeEventListener 'mousemove', @mousemove, false
+		document.removeEventListener 'resize', @resize, false
 
 		# Remove the render output from the DOM.
 		try container.removeChild @renderer.domElement
@@ -91,5 +93,13 @@ class Demo
 	### Handler for window mousemove event. ###
 	mousemove: (event) =>
 
-		@mouse.pos.set event.clientX, event.clientY
-		
+		do event.preventDefault
+
+		if event.touches and !!event.touches.length
+			
+			touch = event.touches[0]
+			@mouse.pos.set touch.pageX, touch.pageY
+
+		else
+
+			@mouse.pos.set event.clientX, event.clientY
