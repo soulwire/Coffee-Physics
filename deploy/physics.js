@@ -2,7 +2,7 @@
 /* Allows safe, dyamic creation of namespaces.
 */
 
-var Attraction, Behaviour, Collision, ConstantForce, EdgeBounce, EdgeWrap, Particle, Physics, Random, Spring, Vector, Wander, namespace,
+var Attraction, Behaviour, Collision, ConstantForce, EdgeBounce, EdgeWrap, Euler, ImprovedEuler, Integrator, Particle, Physics, Random, Spring, Vector, Verlet, Wander, namespace,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -476,6 +476,138 @@ Physics = (function() {
   return Physics;
 
 })();
+
+/* Integrator
+*/
+
+
+Integrator = (function() {
+
+  function Integrator() {}
+
+  Integrator.prototype.integrate = function(particles, dt) {};
+
+  return Integrator;
+
+})();
+
+/* Euler Integrator
+*/
+
+
+Euler = (function(_super) {
+
+  __extends(Euler, _super);
+
+  function Euler() {
+    return Euler.__super__.constructor.apply(this, arguments);
+  }
+
+  Euler.prototype.integrate = function(particles, dt, drag) {
+    var p, vel, _i, _len, _results;
+    vel = new Vector();
+    _results = [];
+    for (_i = 0, _len = particles.length; _i < _len; _i++) {
+      p = particles[_i];
+      if (!(!p.fixed)) {
+        continue;
+      }
+      p.old.pos.copy(p.pos);
+      p.acc.scale(p.massInv);
+      vel.copy(p.vel);
+      p.vel.add(p.acc.scale(dt));
+      p.pos.add(vel.scale(dt));
+      if (drag) {
+        p.vel.scale(drag);
+      }
+      _results.push(p.acc.clear());
+    }
+    return _results;
+  };
+
+  return Euler;
+
+})(Integrator);
+
+/* Improved Euler Integrator
+*/
+
+
+ImprovedEuler = (function(_super) {
+
+  __extends(ImprovedEuler, _super);
+
+  function ImprovedEuler() {
+    return ImprovedEuler.__super__.constructor.apply(this, arguments);
+  }
+
+  ImprovedEuler.prototype.integrate = function(particles, dt, drag) {
+    var acc, dtSq, p, vel, _i, _len, _results;
+    acc = new Vector();
+    vel = new Vector();
+    dtSq = dt * dt;
+    _results = [];
+    for (_i = 0, _len = particles.length; _i < _len; _i++) {
+      p = particles[_i];
+      if (!(!p.fixed)) {
+        continue;
+      }
+      p.old.pos.copy(p.pos);
+      p.acc.scale(p.massInv);
+      vel.copy(p.vel);
+      acc.copy(p.acc);
+      p.pos.add((vel.scale(dt)).add(acc.scale(0.5 * dtSq)));
+      p.vel.add(p.acc.scale(dt));
+      if (drag) {
+        p.vel.scale(drag);
+      }
+      _results.push(p.acc.clear());
+    }
+    return _results;
+  };
+
+  return ImprovedEuler;
+
+})(Integrator);
+
+/* Velocity Verlet Integrator
+*/
+
+
+Verlet = (function(_super) {
+
+  __extends(Verlet, _super);
+
+  function Verlet() {
+    return Verlet.__super__.constructor.apply(this, arguments);
+  }
+
+  Verlet.prototype.integrate = function(particles, dt, drag) {
+    var dtSq, p, pos, _i, _len, _results;
+    pos = new Vector();
+    dtSq = dt * dt;
+    _results = [];
+    for (_i = 0, _len = particles.length; _i < _len; _i++) {
+      p = particles[_i];
+      if (!(!p.fixed)) {
+        continue;
+      }
+      p.acc.scale(p.massInv);
+      (p.vel.copy(p.pos)).sub(p.old.pos);
+      if (drag) {
+        p.vel.scale(drag);
+      }
+      (pos.copy(p.pos)).add(p.vel.add(p.acc.scale(dtSq)));
+      p.old.pos.copy(p.pos);
+      p.pos.copy(pos);
+      _results.push(p.acc.clear());
+    }
+    return _results;
+  };
+
+  return Verlet;
+
+})(Integrator);
 
 /* Behaviour
 */
