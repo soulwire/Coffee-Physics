@@ -11,7 +11,7 @@ class Demo
 		@height = window.innerHeight
 		@width = window.innerWidth
 
-		@renderTime = 0;
+		@renderTime = 0
 		@counter = 0
 
 	setup: (full = yes) ->
