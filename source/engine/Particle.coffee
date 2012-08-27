@@ -15,7 +15,7 @@ class Particle
 		@setRadius 1.0
 
 		# Apply forces.
-		@fixed = false;
+		@fixed = false
 
 		# Behaviours to be applied.
 		@behaviours = []
@@ -45,7 +45,7 @@ class Particle
 	setMass: (@mass = 1.0) ->
 
 		# The inverse mass.
-		@massInv = 1.0 / @mass;
+		@massInv = 1.0 / @mass
 
 	### Sets the radius of the particle. ###
 	setRadius: (@radius = 1.0) ->

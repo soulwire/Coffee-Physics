@@ -185,10 +185,10 @@ class WebGLRenderer extends Renderer
         
         ctx.beginPath()
         ctx.arc rad, rad, rad, 0, Math.PI * 2, false
-        ctx.closePath();
+        ctx.closePath()
 
         ctx.fillStyle = '#FFF'
-        ctx.fill();
+        ctx.fill()
 
         do canvas.toDataURL
 

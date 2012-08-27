@@ -11,8 +11,8 @@ do ->
     vendors = ['ms', 'moz', 'webkit', 'o']
 
     for vendor in vendors when not window.requestAnimationFrame
-        window.requestAnimationFrame = window[ vendor + 'RequestAnimationFrame'];
-        window.cancelRequestAnimationFrame = window[ vendor + 'CancelRequestAnimationFrame'];
+        window.requestAnimationFrame = window[ vendor + 'RequestAnimationFrame']
+        window.cancelRequestAnimationFrame = window[ vendor + 'CancelRequestAnimationFrame']
 
     if not window.requestAnimationFrame
 
