@@ -4,8 +4,50 @@ A lightweight physics engine, written in [CoffeeScript](http://coffeescript.org/
 
 Early demos can be found here: [http://soulwire.github.com/Coffee-Physics/](http://soulwire.github.com/Coffee-Physics/)
 
-### Please Note
+#### A Quick Example
 
-I released this super early for FITC Amsterdam, after only minor testing in Chrome. There are a lot of optimisations needed, as well as several bug fixes (mainly in the WebGL renderer) so over the coming weeks I'll be focussing on these, as well as adding 3D support.
+The CoffeePhysics API is designed to be very simple. Consider the following example:
 
-Consider this pre-release! ;)
+	// Create a physics instance
+	var physics = new Physics();
+
+	// Design some behaviours for particles
+	var attraction = new Attraction( new Vector( 200, 200 ) );
+
+	// Allow particle collisions to make things interesting
+	var collision = new Collision();
+
+	for ( var i = 0; i < 1000; i++ ) {
+
+		// Create a particle
+		var particle = new Particle();
+
+		// Make it collidable
+		collision.pool.push( particle );
+
+		// Apply behaviours
+		particle.behaviours.push( attraction, collision );
+
+		// Add to the simulation
+		physics.particles.push( particle );
+	}
+
+	function update() {
+
+		// Step the simulation
+		physics.step();
+
+		// Render particles
+		for ( var i = 0, n = physics.particles.length; i < n; i++ ) {
+
+			var particle = physics.particles[i];
+			ctx.beginPath();
+			ctx.arc( particle.x, particle.y, particle.mass * 10, 0, Math.PI * 2 );
+			ctx.fill();
+		}
+		
+		requestAnimationFrame( update );
+	}
+
+	// Kick it off
+	update();
