@@ -9,7 +9,7 @@ class WebGLRenderer extends Renderer
         attribute vec3 position;
         attribute float radius;
         attribute vec4 colour;
-        varying lowp vec4 tint;
+        varying vec4 tint;
 
         void main() {
 
@@ -23,17 +23,20 @@ class WebGLRenderer extends Renderer
             // convert from 0->2 to -1->+1 (clipspace)
             vec2 clipSpace = zeroToTwo - 1.0;
 
+            tint = colour;
+
             gl_Position = vec4(clipSpace, 0, 1);
             gl_PointSize = radius * 2.0;
-            tint = colour;
         }
     '''
 
     # Particle fragent shader source.
     @PARTICLE_FS = '''
+
+        precision mediump float;
         
         uniform sampler2D texture;
-        varying lowp vec4 tint;
+        varying vec4 tint;
 
         void main() {
             gl_FragColor = texture2D(texture, gl_PointCoord) * tint;
@@ -100,14 +103,14 @@ class WebGLRenderer extends Renderer
         @initBuffers physics
 
         # Create particle texture from canvas.
-        @particleTexture = @loadTexture do @createParticleTextureData
+        @particleTexture = do @createParticleTextureData
 
         # Use additive blending.
         @gl.blendFunc @gl.SRC_ALPHA, @gl.ONE
 
         # Enable the other shit we need from WebGL.
-        @gl.enable @gl.VERTEX_PROGRAM_POINT_SIZE
-        @gl.enable @gl.TEXTURE_2D
+        #@gl.enable @gl.VERTEX_PROGRAM_POINT_SIZE
+        #@gl.enable @gl.TEXTURE_2D
         @gl.enable @gl.BLEND
 
     initShaders: ->
@@ -134,7 +137,7 @@ class WebGLRenderer extends Renderer
         @springShader.attributes =
             position: @gl.getAttribLocation @springShader, 'position'
 
-        ## console.log @particleShader
+        console.log @particleShader
 
     initBuffers: (physics) ->
 
@@ -190,7 +193,10 @@ class WebGLRenderer extends Renderer
         ctx.fillStyle = '#FFF'
         ctx.fill()
 
-        do canvas.toDataURL
+        texture = @gl.createTexture()
+        @setupTexture texture, canvas
+
+        texture
 
     # Creates a WebGL texture from an image path or data.
     loadTexture: (source) ->
@@ -200,16 +206,22 @@ class WebGLRenderer extends Renderer
 
         texture.image.onload = =>
 
-            @gl.bindTexture @gl.TEXTURE_2D, texture
-            @gl.texImage2D @gl.TEXTURE_2D, 0, @gl.RGBA, @gl.RGBA, @gl.UNSIGNED_BYTE, texture.image
-            @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_MIN_FILTER, @gl.LINEAR
-            @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_MAG_FILTER, @gl.LINEAR
-            @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_WRAP_S, @gl.CLAMP_TO_EDGE
-            @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_WRAP_T, @gl.CLAMP_TO_EDGE
-            @gl.generateMipmap @gl.TEXTURE_2D
-            @gl.bindTexture @gl.TEXTURE_2D, null
+            @setupTexture texture, texture.image
         
         texture.image.src = source
+        texture
+
+    setupTexture: (texture, data) ->
+
+        @gl.bindTexture @gl.TEXTURE_2D, texture
+        @gl.texImage2D @gl.TEXTURE_2D, 0, @gl.RGBA, @gl.RGBA, @gl.UNSIGNED_BYTE, data
+        @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_MIN_FILTER, @gl.LINEAR
+        @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_MAG_FILTER, @gl.LINEAR
+        @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_WRAP_S, @gl.CLAMP_TO_EDGE
+        @gl.texParameteri @gl.TEXTURE_2D, @gl.TEXTURE_WRAP_T, @gl.CLAMP_TO_EDGE
+        @gl.generateMipmap @gl.TEXTURE_2D
+        @gl.bindTexture @gl.TEXTURE_2D, null
+
         texture
 
     # Creates a shader program from vertex and fragment shader sources.
