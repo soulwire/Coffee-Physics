@@ -49,6 +49,7 @@ class Demo
 		@width = window.innerWidth
 		@height = window.innerHeight
 		@renderer.setSize @width, @height
+		@physics.resize new Vector(0, 0), new Vector(@width, @height)
 
 	### Update loop. ###
 	step: ->

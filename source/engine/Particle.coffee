@@ -15,7 +15,10 @@ class Particle
 		@setRadius 1.0
 
 		# Apply forces.
-		@fixed = false
+		@fixed = no
+
+		# Can collide with other particles
+		@collidable = no
 
 		# Behaviours to be applied.
 		@behaviours = []

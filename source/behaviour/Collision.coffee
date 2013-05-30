@@ -1,55 +1,34 @@
 ### Collision Behaviour ###
+Collision =
 
-# TODO: Collision response for non Verlet integrators.
+    apply: (p1, p2, useMass = yes) ->
 
-class Collision extends Behaviour
+        # Delta between particles positions.
+        delta = Vector.sub p2.pos, p1.pos
 
-    constructor: (@useMass = yes, @callback = null) ->
+        # Squared distance between particles.
+        distSq = delta.magSq()
 
-        # Pool of collidable particles.
-        @pool = []
+        # Sum of both radii.
+        radii = p1.radius + p2.radius
 
-        # Delta between particle positions.
-        @_delta = new Vector()
+        # Check if particles collide.
+        if distSq <= radii * radii
 
-        super
+            # Compute real distance.
+            dist = Math.sqrt distSq
 
-    apply: (p, dt, index) ->
+            # Determine overlap.
+            overlap = (p1.radius + p2.radius) - dist
+            #overlap += 0.5
 
-        #super p, dt, index
+            # Total mass.
+            mt = p1.mass + p2.mass
 
-        # Check pool for collisions.
-        for o in @pool[index..] when o isnt p
+            # Distribute collision responses.
+            r1 = if useMass then p2.mass / mt else 0.5
+            r2 = if useMass then p1.mass / mt else 0.5
 
-            # Delta between particles positions.
-            (@_delta.copy o.pos).sub p.pos
-
-            # Squared distance between particles.
-            distSq = @_delta.magSq()
-
-            # Sum of both radii.
-            radii = p.radius + o.radius
-
-            # Check if particles collide.
-            if distSq <= radii * radii
-
-                # Compute real distance.
-                dist = Math.sqrt distSq
-
-                # Determine overlap.
-                overlap = (p.radius + o.radius) - dist
-                overlap += 0.5
-
-                # Total mass.
-                mt = p.mass + o.mass
-
-                # Distribute collision responses.
-                r1 = if @useMass then o.mass / mt else 0.5
-                r2 = if @useMass then p.mass / mt else 0.5
-
-                # Move particles so they no longer overlap.
-                p.pos.add (@_delta.clone().norm().scale overlap * -r1)
-                o.pos.add (@_delta.norm().scale overlap * r2)
-
-                # Fire callback if defined.
-                @callback?(p, o, overlap)
+            # Move particles so they no longer overlap.
+            p1.pos.add delta.clone().norm().scale overlap * -r1
+            p2.pos.add delta.norm().scale overlap * r2

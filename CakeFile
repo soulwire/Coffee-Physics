@@ -13,6 +13,7 @@ output =
 		'base'
 		'math/Random'
 		'math/Vector'
+		'engine/Quadtree'
 		'engine/Particle'
 		'engine/Spring'
 		'engine/Physics'

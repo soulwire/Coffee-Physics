@@ -12,7 +12,6 @@ class CollisionDemo extends Demo
         max = new Vector @width, @height
 
         bounds = new EdgeBounce min, max
-        collide = new Collision
         attraction = new Attraction @mouse.pos, 2000, 1400
 
         max = if full then 350 else 150
@@ -23,6 +22,9 @@ class CollisionDemo extends Demo
             p = new Particle (Random 0.5, 4.0)
             p.setRadius p.mass * 4
 
+            # Make it collidable
+            p.collidable = yes
+
             p.moveTo new Vector (Random @width), (Random @height)
 
             # Connect to spring or move free.
@@ -32,16 +34,7 @@ class CollisionDemo extends Demo
             else
                 p.behaviours.push attraction
 
-            # Add particle to collision pool.
-            collide.pool.push p
-
-            # Allow particle to collide.
-            p.behaviours.push collide
             p.behaviours.push bounds
 
             @physics.particles.push p
-
-    onCollision: (p1, p2) =>
-
-        # Respond to collision.
 

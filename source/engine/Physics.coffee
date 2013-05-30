@@ -28,11 +28,22 @@ class Physics
 		# Max iterations per step.
 		@_maxSteps = 4
 
+		# Spatial quadtree
+		@quadtree = new Quadtree
+
 		# Particles in system.
 		@particles = []
 
 		# Springs in system.
 		@springs = []
+
+		# Bounds
+		@bounds =
+			min: new Vector
+			max: new Vector
+
+		# Set initial size
+		@resize new Vector(0, 0), new Vector(window.innerWidth, window.innerHeight)
 
 	### Performs a numerical integration step. ###
 	integrate: (dt) ->
@@ -59,6 +70,18 @@ class Physics
 		for spring in @springs
 
 			spring.apply()
+
+		# Apply collisions
+
+		@quadtree.update @particles
+
+		for particle in @particles when particle.collidable
+
+			potential = @quadtree.search particle
+
+			for other in potential when other isnt particle
+
+				Collision.apply particle, other, yes
 	
 	### Steps the system. ###
 	step: ->
@@ -100,6 +123,13 @@ class Physics
 
 		# Store step time for debugging.
 		@_step = new Date().getTime() - time
+
+	### Sets the boundaries of the engine ###
+	resize: (min, max) ->
+
+		@quadtree.resize min.x, min.y, max.x, max.y
+		@bounds.min.copy min
+		@bounds.max.copy max
 
 	### Clean up after yourself. ###
 	destroy: ->
