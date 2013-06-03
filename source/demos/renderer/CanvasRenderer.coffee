@@ -10,7 +10,6 @@ class CanvasRenderer extends Renderer
 
         # Set the DOM element.
         @domElement = @canvas
-
         @colours = {}
 
     init: (physics) ->
@@ -18,7 +17,22 @@ class CanvasRenderer extends Renderer
         super physics
 
         # Index colours for faster drawing
-        ( @colours[ p.colour ] ?= [] ).push p for p in physics.particles
+        r = 50
+        for p in physics.particles
+
+            ( @colours[ p.colour ] ?= items: [], canvas: do ->
+
+                canvas = document.createElement 'canvas'
+                canvas.width = canvas.height = r * 2
+
+                ctx = canvas.getContext '2d'
+                ctx.fillStyle = p.colour
+                ctx.beginPath()
+                ctx.arc r, r, r, 0, Math.PI * 2
+                ctx.fill()
+
+                canvas ).items.push p
+
 
     render: (physics) ->
 
@@ -43,15 +57,14 @@ class CanvasRenderer extends Renderer
 
             TWO_PI = Math.PI * 2
 
-            for hex, list of @colours
+            for hex, obj of @colours
 
-                @ctx.fillStyle = '#' + (hex or 'FFFFFF')
+                img = obj.canvas
 
-                for p in list
+                for p in obj.items
 
-                    @ctx.beginPath()
-                    @ctx.arc(p.pos.x, p.pos.y, p.radius, 0, TWO_PI, no)
-                    @ctx.fill()
+                    size = p.radius * 2
+                    @ctx.drawImage img, p.pos.x - p.radius, p.pos.y - p.radius, size, size
 
         if @renderSprings
         
