@@ -16,9 +16,6 @@ The CoffeePhysics API is designed to be very simple. Consider the following [exa
 	var avoidMouse = new Attraction();
 	var pullToCenter = new Attraction();
 
-	// Allow particle collisions to make things interesting
-	var collision = new Collision();
-
 	// Use Sketch.js to make life much easier
 	var example = Sketch.create({ container: document.body });
 
@@ -33,10 +30,10 @@ The CoffeePhysics API is designed to be very simple. Consider the following [exa
 	        particle.moveTo( position );
 
 	        // Make it collidable
-	        collision.pool.push( particle );
+	        particle.collidable = true;
 
 	        // Apply behaviours
-	        particle.behaviours.push( avoidMouse, pullToCenter, collision );
+	        particle.behaviours.push( avoidMouse, pullToCenter );
 
 	        // Add to the simulation
 	        physics.particles.push( particle );
