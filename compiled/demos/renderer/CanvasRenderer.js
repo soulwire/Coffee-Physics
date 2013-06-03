@@ -17,30 +17,43 @@ CanvasRenderer = (function(_super) {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.domElement = this.canvas;
+    this.colours = {};
+    this.colours = {};
   }
 
   CanvasRenderer.prototype.init = function(physics) {
-    return CanvasRenderer.__super__.init.call(this, physics);
+    var p, _base, _i, _len, _name, _ref, _ref1, _results;
+    CanvasRenderer.__super__.init.call(this, physics);
+    _ref = physics.particles;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      p = _ref[_i];
+      _results.push(((_ref1 = (_base = this.colours)[_name = p.colour]) != null ? _ref1 : _base[_name] = []).push(p));
+    }
+    return _results;
   };
 
   CanvasRenderer.prototype.render = function(physics) {
-    var TWO_PI, dir, p, s, time, vel, _i, _j, _len, _len1, _ref, _ref1;
+    var TWO_PI, dir, hex, list, p, s, time, vel, _i, _j, _len, _len1, _ref, _ref1;
     CanvasRenderer.__super__.render.call(this, physics);
     time = new Date().getTime();
     vel = new Vector();
     dir = new Vector();
-    this.canvas.width = this.canvas.width;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.globalCompositeOperation = 'lighter';
     this.ctx.lineWidth = 1;
     if (this.renderParticles) {
       TWO_PI = Math.PI * 2;
-      _ref = physics.particles;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        p = _ref[_i];
-        this.ctx.beginPath();
-        this.ctx.arc(p.pos.x, p.pos.y, p.radius, 0, TWO_PI, false);
-        this.ctx.fillStyle = '#' + (p.colour || 'FFFFFF');
-        this.ctx.fill();
+      _ref = this.colours;
+      for (hex in _ref) {
+        list = _ref[hex];
+        this.ctx.fillStyle = '#' + (hex || 'FFFFFF');
+        for (_i = 0, _len = list.length; _i < _len; _i++) {
+          p = list[_i];
+          this.ctx.beginPath();
+          this.ctx.arc(p.pos.x, p.pos.y, p.radius, 0, TWO_PI, false);
+          this.ctx.fill();
+        }
       }
     }
     if (this.renderSprings) {

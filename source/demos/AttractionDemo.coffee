@@ -14,7 +14,7 @@ class AttractionDemo extends Demo
         attraction = new Attraction @mouse.pos, 1200, 1200
         repulsion = new Attraction @mouse.pos, 200, -2000
 
-        max = if full then 400 else 200
+        max = if full then 600 else 400
 
         for i in [0..max]
 

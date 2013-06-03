@@ -16,7 +16,6 @@ Collision = {
     if (distSq <= radii * radii) {
       dist = Math.sqrt(distSq);
       overlap = (p1.radius + p2.radius) - dist;
-      overlap += 0.5;
       mt = p1.mass + p2.mass;
       r1 = useMass ? p2.mass / mt : 0.5;
       r2 = useMass ? p1.mass / mt : 0.5;
