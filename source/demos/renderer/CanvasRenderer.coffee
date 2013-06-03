@@ -11,9 +11,14 @@ class CanvasRenderer extends Renderer
         # Set the DOM element.
         @domElement = @canvas
 
+        @colours = {}
+
     init: (physics) ->
 
         super physics
+
+        # Index colours for faster drawing
+        ( @colours[ p.colour ] ?= [] ).push p for p in physics.particles
 
     render: (physics) ->
 
@@ -28,7 +33,7 @@ class CanvasRenderer extends Renderer
         dir = new Vector()
 
         # Clear canvas.
-        @canvas.width = @canvas.width
+        @ctx.clearRect 0, 0, @canvas.width, @canvas.height
 
         @ctx.globalCompositeOperation = 'lighter'
         @ctx.lineWidth = 1
@@ -37,14 +42,16 @@ class CanvasRenderer extends Renderer
         if @renderParticles
 
             TWO_PI = Math.PI * 2
-        
-            for p in physics.particles
 
-                @ctx.beginPath()
-                @ctx.arc(p.pos.x, p.pos.y, p.radius, 0, TWO_PI, no)
+            for hex, list of @colours
 
-                @ctx.fillStyle = '#' + (p.colour or 'FFFFFF')
-                @ctx.fill()
+                @ctx.fillStyle = '#' + (hex or 'FFFFFF')
+
+                for p in list
+
+                    @ctx.beginPath()
+                    @ctx.arc(p.pos.x, p.pos.y, p.radius, 0, TWO_PI, no)
+                    @ctx.fill()
 
         if @renderSprings
         
@@ -52,6 +59,7 @@ class CanvasRenderer extends Renderer
             @ctx.beginPath()
 
             for s in physics.springs
+
                 @ctx.moveTo(s.p1.pos.x, s.p1.pos.y)
                 @ctx.lineTo(s.p2.pos.x, s.p2.pos.y)
 
