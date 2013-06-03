@@ -46,16 +46,16 @@ Quadtree = (function() {
         if (item.pos.y + item.radius < this.cy) {
           if (item.pos.x + item.radius < this.cx) {
             quad = this.q1;
+          } else if (item.pos.x - item.radius > this.cx) {
+            quad = this.q2;
           }
-        } else if (item.pos.x - item.radius > this.cx) {
-          quad = this.q2;
         }
         if (item.pos.y - item.radius > this.cy) {
           if (item.pos.x - item.radius > this.cx) {
             quad = this.q3;
+          } else if (item.pos.x + item.radius < this.cx) {
+            quad = this.q4;
           }
-        } else if (item.pos.x + item.radius < this.cx) {
-          quad = this.q4;
         }
         if (quad) {
           quad.insert(item);
@@ -72,16 +72,16 @@ Quadtree = (function() {
           if (item.pos.y + item.radius < this.cy) {
             if (item.pos.x + item.radius < this.cx) {
               quad = this.q1;
+            } else if (item.pos.x - item.radius > this.cx) {
+              quad = this.q2;
             }
-          } else if (item.pos.x - item.radius > this.cx) {
-            quad = this.q2;
           }
           if (item.pos.y1 > this.cy) {
             if (item.pos.x - item.radius > this.cx) {
               quad = this.q3;
+            } else if (item.pos.x + item.radius < this.cx) {
+              quad = this.q4;
             }
-          } else if (item.pos.x + item.radius < this.cx) {
-            quad = this.q4;
           }
           if (quad) {
             this.items.splice(i, 1);
@@ -110,20 +110,19 @@ Quadtree = (function() {
       if (buffer == null) {
         buffer = [];
       }
-      buffer = buffer || [];
       if (item.pos.y + item.radius < this.cy) {
         if (item.pos.x + item.radius < this.cx) {
           quad = this.q1;
+        } else if (item.pos.x - item.radius > this.cx) {
+          quad = this.q2;
         }
-      } else if (item.pos.x - item.radius > this.cx) {
-        quad = this.q2;
       }
       if (item.pos.y - item.radius > this.cy) {
         if (item.pos.x - item.radius > this.cx) {
           quad = this.q3;
+        } else if (item.pos.x + item.radius < this.cx) {
+          quad = this.q4;
         }
-      } else if (item.pos.x + item.radius < this.cx) {
-        quad = this.q4;
       }
       if (quad && this.hasDivided) {
         quad.search(item, buffer);

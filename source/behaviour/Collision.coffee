@@ -20,7 +20,7 @@ Collision =
 
             # Determine overlap.
             overlap = (p1.radius + p2.radius) - dist
-            #overlap += 0.5
+            overlap += 0.5
 
             # Total mass.
             mt = p1.mass + p2.mass

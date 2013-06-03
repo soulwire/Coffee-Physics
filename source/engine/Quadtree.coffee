@@ -39,12 +39,12 @@ Quadtree = do ->
 
                 if item.pos.y + item.radius < @cy # top
 
-                         if item.pos.x + item.radius < @cx then quad = @q1 # left
+                    if item.pos.x + item.radius < @cx then quad = @q1 # left
                     else if item.pos.x - item.radius > @cx then quad = @q2 # right
 
                 if item.pos.y - item.radius > @cy # bottom
 
-                         if item.pos.x - item.radius > @cx then quad = @q3 # right
+                    if item.pos.x - item.radius > @cx then quad = @q3 # right
                     else if item.pos.x + item.radius < @cx then quad = @q4 # left
 
                 # Cease processing this node and pass to child
@@ -75,12 +75,12 @@ Quadtree = do ->
 
                     if item.pos.y + item.radius < @cy # top
 
-                             if item.pos.x + item.radius < @cx then quad = @q1 # left
+                        if item.pos.x + item.radius < @cx then quad = @q1 # left
                         else if item.pos.x - item.radius > @cx then quad = @q2 # right
 
                     if item.pos.y1 > @cy # bottom
 
-                             if item.pos.x - item.radius > @cx then quad = @q3 # right
+                        if item.pos.x - item.radius > @cx then quad = @q3 # right
                         else if item.pos.x + item.radius < @cx then quad = @q4 # left
 
                     # Reassign item
@@ -98,18 +98,16 @@ Quadtree = do ->
 
         search: ( item, buffer = [] ) ->
 
-            buffer = buffer || []
-
             # Select target quadrant
 
             if item.pos.y + item.radius < @cy # top
 
-                     if item.pos.x + item.radius < @cx then quad = @q1 # left
+                if item.pos.x + item.radius < @cx then quad = @q1 # left
                 else if item.pos.x - item.radius > @cx then quad = @q2 # right
 
             if item.pos.y - item.radius > @cy # bottom
 
-                     if item.pos.x - item.radius > @cx then quad = @q3 # right
+                if item.pos.x - item.radius > @cx then quad = @q3 # right
                 else if item.pos.x + item.radius < @cx then quad = @q4 # left
 
             # Search child nodes
