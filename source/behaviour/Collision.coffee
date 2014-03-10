@@ -37,7 +37,7 @@ class Collision extends Behaviour
                 dist = Math.sqrt distSq
 
                 # Determine overlap.
-                overlap = (p.radius + o.radius) - dist
+                overlap = radii - dist
                 overlap += 0.5
 
                 # Total mass.
